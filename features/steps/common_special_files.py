@@ -5,7 +5,11 @@ Handles the given-part and all then-parts.
 """
 import hashlib
 from pathlib import Path
-from behave import given, then
+
+from behave import (  # type: ignore # pylint: disable=no-name-in-module,import-error
+    given,
+    then,
+)
 
 
 @given('the "snmp-spy" project')
