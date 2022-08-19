@@ -5,15 +5,13 @@ Handles the given-part and all then-parts.
 """
 import hashlib
 from pathlib import Path
+from typing import Any
 
-from behave import (  # type: ignore # pylint: disable=no-name-in-module,import-error
-    given,
-    then,
-)
+from behave import given, then
 
 
 @given('the "snmp-spy" project')
-def step_given_project(context) -> None:
+def step_given_project(context: Any) -> None:
     """Set the root_dir to be the root directory of snmp-spy .
     :param context: behave context.
     """
@@ -21,7 +19,7 @@ def step_given_project(context) -> None:
 
 
 @then('"LICENSE" is available')
-def step_license(context) -> None:
+def step_license(context: Any) -> None:
     """Asserts that the LICENSE is available and not changed from the initial commit.
     :param context: behave context.
     """
@@ -35,7 +33,7 @@ def step_license(context) -> None:
 
 
 @then('"CONTRIBUTING" is available')
-def step_contributing(context) -> None:
+def step_contributing(context: Any) -> None:
     """Asserts that the CONTRIBUTING.md file exists.
     :param context: behave context.
     """
@@ -43,7 +41,7 @@ def step_contributing(context) -> None:
 
 
 @then('"CHANGELOG" is available')
-def step_changelog(context):
+def step_changelog(context: Any) -> None:
     """Asserts that the CHANGELOG.md file exists.
     :param context: behave context.
     """
@@ -51,7 +49,7 @@ def step_changelog(context):
 
 
 @then('"README" is available')
-def step_readme(context):
+def step_readme(context: Any) -> None:
     """Asserts that the README.md file exists.
     :param context: behave context.
     """

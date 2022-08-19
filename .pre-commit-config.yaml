@@ -18,10 +18,6 @@ repos:
     hooks:
     -   id: mypy
         args: [--ignore-missing-imports, --non-interactive, --install-types]
--   repo: https://github.com/PyCQA/pylint
-    rev: v2.14.5
-    hooks:
-    -   id: pylint
 -   repo: https://github.com/PyCQA/flake8
     rev: 5.0.4
     hooks:
