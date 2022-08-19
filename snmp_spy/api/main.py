@@ -9,6 +9,9 @@ from fastapi import FastAPI
 
 from .. import __doc__, __version__, pyproject
 
+__all__ = ["app"]
+
+
 app = FastAPI(
     title=pyproject.tool.poetry.name.upper(),
     version=__version__,
