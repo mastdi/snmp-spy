@@ -10,7 +10,7 @@ class DeviceCreate(Handler):
 
     async def handle(self, request: DeviceIn) -> DeviceOut:
         return DeviceOut(
-            identifier=uuid.uuid5(DeviceCreate.__NAMESPACE, request.name).hex,
+            identifier=uuid.uuid5(DeviceCreate.__NAMESPACE, request.name),
             name=request.name,
             description=request.description,
         )
