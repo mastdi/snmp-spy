@@ -5,13 +5,13 @@ from fastapi import status
 from snmp_spy.domain.device import Device, DeviceIdentifier
 from snmp_spy.util.mediator import Handler, mediator
 
-from ...domain.exceptions import NotFound
+from ...domain.exceptions import NotFoundError
 from .router import router
 
 
 class DeviceRead(Handler):
     async def handle(self, request: DeviceIdentifier) -> Device:
-        raise RuntimeError(NotFound(identifier=request.identifier))
+        raise RuntimeError(NotFoundError(identifier=request.identifier))
 
 
 @router.get(
@@ -26,7 +26,7 @@ class DeviceRead(Handler):
             "description": "Device found.",
         },
         status.HTTP_404_NOT_FOUND: {
-            "model": NotFound,
+            "model": NotFoundError,
             "summary": "Device not found.",
             "description": "Device with the given identifier not found.",
         },

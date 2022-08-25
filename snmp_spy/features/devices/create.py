@@ -6,6 +6,7 @@ from fastapi import status
 from snmp_spy.domain.device import Device, DeviceIn
 from snmp_spy.util.mediator import Handler, mediator
 
+from ...domain.exceptions import AlreadyExistsError
 from .router import router
 
 
@@ -53,8 +54,8 @@ class DeviceCreate(Handler):
             },
         },
         status.HTTP_409_CONFLICT: {
-            # TODO: Add model
-            "description": "Device with the given name already exists."
+            "model": AlreadyExistsError,
+            "description": "Device with the given name already exists.",
         },
     },
 )
