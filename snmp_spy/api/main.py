@@ -5,7 +5,8 @@ runner, e.g. uvicorn.
 """
 from urllib.parse import urljoin
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 
 from snmp_spy.features import devices
 
@@ -13,6 +14,7 @@ from .. import __doc__, __version__, pyproject
 
 __all__ = ["app"]
 
+from ..domain.exceptions import ExceptionBase
 
 app = FastAPI(
     title=pyproject.tool.poetry.name.upper(),
@@ -31,3 +33,15 @@ app = FastAPI(
 )
 
 devices.register_routes(app)
+
+
+@app.exception_handler(RuntimeError)
+async def unicorn_exception_handler(
+    request: Request, exc: RuntimeError
+) -> JSONResponse:
+    if not isinstance(exc.args[0], ExceptionBase):
+        raise exc
+    return JSONResponse(
+        status_code=exc.args[0].status_code,
+        content=exc.args[0].dict(),
+    )

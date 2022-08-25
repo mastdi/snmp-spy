@@ -38,3 +38,7 @@ class Device(Response, DeviceBase, Identifier):
                 "identifier": "d4104a6e-e288-4d6d-b8cf-8f0b8eb03a56",
             }
         }
+
+
+class DeviceIdentifier(Request, Identifier):
+    pass
