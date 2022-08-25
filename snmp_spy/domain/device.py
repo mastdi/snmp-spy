@@ -16,10 +16,25 @@ class DeviceBase(pydantic.BaseModel):
         title="Description of the device", description="An text describing the device."
     )
 
+    class Config:
+        schema_extra = {
+            "example": {
+                "name": "DiskStation DS220+",
+                "description": "A compact network-attached storage solution designed "
+                "to streamline the data and multimedia management.",
+            }
+        }
+
 
 class DeviceIn(Request, DeviceBase):
     pass
 
 
-class DeviceOut(Response, DeviceBase, Identifier):
-    pass
+class Device(Response, DeviceBase, Identifier):
+    class Config:
+        schema_extra = {
+            "example": {
+                **DeviceIn.Config.schema_extra["example"],
+                "identifier": "d4104a6e-e288-4d6d-b8cf-8f0b8eb03a56",
+            }
+        }

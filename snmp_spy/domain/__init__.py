@@ -9,6 +9,6 @@ class Identifier(pydantic.BaseModel):
         title="The identifier of the resource.",
         description="A unique identifier of the resource. "
         "No assumptions about the format of this field should be made.",
-        min_length=1,
-        max_length=64,
+        exclusiveMinimum=1,
+        exclusiveMaximum=64,
     )

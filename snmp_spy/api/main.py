@@ -7,6 +7,8 @@ from urllib.parse import urljoin
 
 from fastapi import FastAPI
 
+from snmp_spy.features import devices
+
 from .. import __doc__, __version__, pyproject
 
 __all__ = ["app"]
@@ -27,3 +29,5 @@ app = FastAPI(
         ),
     },
 )
+
+devices.register_routes(app)
