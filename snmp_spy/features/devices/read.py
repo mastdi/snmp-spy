@@ -6,12 +6,21 @@ from snmp_spy.domain.device import Device, DeviceIdentifier
 from snmp_spy.util.mediator import Handler, mediator
 
 from ...domain.exceptions import NotFoundError
+from .database import devices
 from .router import router
 
 
 class DeviceRead(Handler):
     async def handle(self, request: DeviceIdentifier) -> Device:
-        raise RuntimeError(NotFoundError(identifier=request.identifier))
+        # TODO: Figure out how the architecture should look like to avoid circular
+        #       imports
+        from snmp_spy.infrastructure.database import database
+
+        query = devices.select().where(devices.c.identifier == request.identifier)
+        result = await database.fetch_one(query)
+        if result is None:
+            raise RuntimeError(NotFoundError(identifier=request.identifier))
+        return Device(**dict(result))
 
 
 @router.get(

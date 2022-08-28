@@ -11,9 +11,13 @@ class DeviceBase(pydantic.BaseModel):
         ...,
         title="The name of the device.",
         description="A unique visible name of the device.",
+        min_length=1,
+        max_length=128,
     )
     description: Optional[str] = pydantic.Field(
-        title="Description of the device", description="An text describing the device."
+        title="Description of the device",
+        description="An text describing the device.",
+        max_length=65536,
     )
 
     class Config:

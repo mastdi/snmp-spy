@@ -12,6 +12,9 @@ python = "^3.8"
 fastapi = "^0.79.0"
 pydantic = "^1.9.2"
 toml = "^0.10.2"
+databases = {extras = ["aiosqlite"], version = "^0.6.1"}
+SQLAlchemy = "^1.4.40"
+SQLAlchemy-Utils = "^0.38.3"
 
 [tool.poetry.dev-dependencies]
 behave = "^1.2.6"

@@ -36,7 +36,7 @@ class NotFoundError(ExceptionBase):
         }
 
 
-class AlreadyExistsError(ExceptionBase):
+class NameAlreadyExistsError(ExceptionBase):
     def __init__(self, name: str, **data: Any) -> None:
         data["message"] = f"Resource with unique property '{name}' already exists."
         data["status_code"] = status.HTTP_409_CONFLICT

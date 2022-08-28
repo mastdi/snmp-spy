@@ -1,3 +1,4 @@
+import datetime
 import uuid
 from http import HTTPStatus
 
@@ -6,14 +7,41 @@ from fastapi import status
 from snmp_spy.domain.device import Device, DeviceIn
 from snmp_spy.util.mediator import Handler, mediator
 
-from ...domain.exceptions import AlreadyExistsError
+from ...domain.exceptions import NameAlreadyExistsError
+from .database import devices
 from .router import router
 
 
 class DeviceCreate(Handler):
     async def handle(self, request: DeviceIn) -> Device:
+        # TODO: Figure out how the architecture should look like to avoid circular
+        #       imports
+        from snmp_spy.infrastructure.database import database
+
+        query = devices.insert()
+        # TODO: Figure out a way to do this automatically
+        now = datetime.datetime.utcnow()
+        identifier = uuid.uuid4()
+
+        try:
+            await database.execute(
+                query,
+                values={
+                    "identifier": identifier,
+                    "created": now,
+                    "updated": now,
+                    **request.dict(),
+                },
+            )
+        except Exception as exception:
+            if "devices.name" in repr(exception):
+                # TODO: Figure out a way to do this better
+                raise RuntimeError(
+                    NameAlreadyExistsError(name=request.name)
+                ) from exception
+            raise exception
         return Device(
-            identifier=uuid.uuid4(),
+            identifier=identifier,
             name=request.name,
             description=request.description,
         )
@@ -54,7 +82,7 @@ class DeviceCreate(Handler):
             },
         },
         status.HTTP_409_CONFLICT: {
-            "model": AlreadyExistsError,
+            "model": NameAlreadyExistsError,
             "description": "Device with the given name already exists.",
         },
     },

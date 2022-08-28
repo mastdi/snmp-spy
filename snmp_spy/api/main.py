@@ -14,7 +14,12 @@ from .. import __doc__, __version__, pyproject
 
 __all__ = ["app"]
 
+from snmp_spy.infrastructure.database import create_all, init
+
 from ..domain.exceptions import ExceptionBase
+
+init("sqlite+aiosqlite:///database.db")
+create_all("sqlite:///database.db")
 
 app = FastAPI(
     title=pyproject.tool.poetry.name.upper(),
