@@ -3,7 +3,11 @@ from typing import Any, Callable, Optional, Type
 
 import sqlalchemy
 import sqlalchemy_utils
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    AsyncSessionTransaction,
+    create_async_engine,
+)
 from sqlalchemy.orm import DeclarativeMeta, declarative_base, sessionmaker
 
 __all__ = ["Base", "primary_key_column", "session", "init_db", "SessionContext"]
@@ -49,17 +53,24 @@ async def init_db(
 class SessionContext:
     def __init__(self) -> None:
         self.__session: Optional[AsyncSession] = None
+        self.__active_transaction: Optional[AsyncSessionTransaction] = None
 
     async def __aenter__(self) -> AsyncSession:
         global session
         self.__session = session()
+        self.__active_transaction = await self.__session.begin()
         return self.__session
 
     async def __aexit__(
         self, exc_type: Type[Exception], exc: Exception, tb: Any
     ) -> None:
         assert isinstance(self.__session, AsyncSession)
+        assert isinstance(self.__active_transaction, AsyncSessionTransaction)
+
         if exc_type is None:
-            await self.__session.commit()
+            await self.__active_transaction.commit()
         else:
-            await self.__session.rollback()
+            await self.__active_transaction.rollback()
+
+        await self.__active_transaction.__aexit__(exc_type, exc, tb)
+        await self.__session.__aexit__(exc_type, exc, tb)
