@@ -1,12 +1,12 @@
 import uuid
-from typing import Callable
+from typing import Any, Callable, Optional, Type
 
 import sqlalchemy
 import sqlalchemy_utils
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import DeclarativeMeta, declarative_base, sessionmaker
 
-__all__ = ["Base", "primary_key_column", "session", "init_db"]
+__all__ = ["Base", "primary_key_column", "session", "init_db", "SessionContext"]
 
 # noinspection PyTypeChecker
 Base: DeclarativeMeta = declarative_base()
@@ -44,3 +44,25 @@ async def init_db(
     session = sessionmaker(
         engine, expire_on_commit=expire_on_commit, class_=AsyncSession
     )
+
+
+class SessionContext:
+    def __init__(self) -> None:
+        self.__session: Optional[AsyncSession] = None
+
+    async def __aenter__(self) -> AsyncSession:
+        global session
+        self.__session = session()
+        return self.__session
+
+    async def __aexit__(
+        self, exc_type: Type[Exception], exc: Exception, tb: Any
+    ) -> None:
+        print(type(exc_type))
+        print(type(exc))
+        print(type(tb))
+        assert isinstance(self.__session, AsyncSession)
+        if exc_type is None:
+            await self.__session.commit()
+        else:
+            await self.__session.rollback()

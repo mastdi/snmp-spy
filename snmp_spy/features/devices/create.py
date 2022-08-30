@@ -20,15 +20,12 @@ class DeviceCreate(Handler):
     async def handle(self, request: DeviceIn) -> Device:
         statement = insert(Devices).values(**request.dict())
 
-        try:
-            async with db.session() as session:
-                async with session.begin():
-                    cursor: CursorResult = await session.execute(statement)
-                    identifier = cursor.inserted_primary_key.identifier
-                await session.commit()
-        except IntegrityError as error:
-            session.rollback()
-            raise RuntimeError(AlreadyExistsError(name=request.name)) from error
+        async with db.SessionContext() as session:
+            try:
+                cursor: CursorResult = await session.execute(statement)
+                identifier = cursor.inserted_primary_key.identifier
+            except IntegrityError as error:
+                raise RuntimeError(AlreadyExistsError(name=request.name)) from error
 
         return Device(
             identifier=identifier,
