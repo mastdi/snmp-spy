@@ -9,7 +9,7 @@ authors = ["Martin Storgaard Dieu <martin@storgaarddieu.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-fastapi = "^0.79.0"
+fastapi = "^0.81.0"
 pydantic = "^1.9.2"
 toml = "^0.10.2"
 SQLAlchemy = {extras = ["mypy", "asyncio", "aiosqlite"], version = "^1.4.40"}
