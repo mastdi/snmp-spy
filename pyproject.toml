@@ -12,8 +12,7 @@ python = "^3.8"
 fastapi = "^0.79.0"
 pydantic = "^1.9.2"
 toml = "^0.10.2"
-databases = {extras = ["aiosqlite"], version = "^0.6.1"}
-SQLAlchemy = "^1.4.40"
+SQLAlchemy = {extras = ["mypy", "asyncio", "aiosqlite"], version = "^1.4.40"}
 SQLAlchemy-Utils = "^0.38.3"
 
 [tool.poetry.dev-dependencies]
@@ -25,6 +24,7 @@ uvicorn = {extras = ["standard"], version = "^0.18.2"}
 requests = "^2.28.1"
 pytest = "^7.1.2"
 pytest-asyncio = "^0.19.0"
+sqlalchemy-stubs = "^0.4"
 
 [tool.mypy]
 # --strict

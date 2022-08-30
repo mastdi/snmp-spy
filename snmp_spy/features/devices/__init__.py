@@ -6,6 +6,8 @@ from .create import DeviceCreate
 from .read import DeviceRead
 from .router import router
 
+__all__ = ["register_handlers", "register_routes"]
+
 
 def register_handlers(mediator: Mediator) -> None:
     mediator.register_handler(DeviceCreate())

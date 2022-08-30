@@ -1,45 +1,35 @@
-import datetime
-import uuid
 from http import HTTPStatus
 
 from fastapi import status
+from sqlalchemy import insert
+from sqlalchemy.engine import CursorResult
+from sqlalchemy.exc import IntegrityError
 
+import snmp_spy.infrastructure.db as db
 from snmp_spy.domain.device import Device, DeviceIn
 from snmp_spy.util.mediator import Handler, mediator
 
-from ...domain.exceptions import NameAlreadyExistsError
-from .database import devices
+from ...domain.exceptions import AlreadyExistsError
+from .db import Devices
 from .router import router
+
+__all__ = ["DeviceCreate", "create_device"]
 
 
 class DeviceCreate(Handler):
     async def handle(self, request: DeviceIn) -> Device:
-        # TODO: Figure out how the architecture should look like to avoid circular
-        #       imports
-        from snmp_spy.infrastructure.database import database
-
-        query = devices.insert()
-        # TODO: Figure out a way to do this automatically
-        now = datetime.datetime.utcnow()
-        identifier = uuid.uuid4()
+        statement = insert(Devices).values(**request.dict())
 
         try:
-            await database.execute(
-                query,
-                values={
-                    "identifier": identifier,
-                    "created": now,
-                    "updated": now,
-                    **request.dict(),
-                },
-            )
-        except Exception as exception:
-            if "devices.name" in repr(exception):
-                # TODO: Figure out a way to do this better
-                raise RuntimeError(
-                    NameAlreadyExistsError(name=request.name)
-                ) from exception
-            raise exception
+            async with db.session() as session:
+                async with session.begin():
+                    cursor: CursorResult = await session.execute(statement)
+                    identifier = cursor.inserted_primary_key.identifier
+                await session.commit()
+        except IntegrityError as error:
+            session.rollback()
+            raise RuntimeError(AlreadyExistsError(name=request.name)) from error
+
         return Device(
             identifier=identifier,
             name=request.name,
@@ -82,7 +72,7 @@ class DeviceCreate(Handler):
             },
         },
         status.HTTP_409_CONFLICT: {
-            "model": NameAlreadyExistsError,
+            "model": AlreadyExistsError,
             "description": "Device with the given name already exists.",
         },
     },

@@ -14,12 +14,9 @@ from .. import __doc__, __version__, pyproject
 
 __all__ = ["app"]
 
-from snmp_spy.infrastructure.database import create_all, init
+from snmp_spy.infrastructure.db import init_db
 
 from ..domain.exceptions import ExceptionBase
-
-init("sqlite+aiosqlite:///database.db")
-create_all("sqlite:///database.db")
 
 app = FastAPI(
     title=pyproject.tool.poetry.name.upper(),
@@ -50,3 +47,15 @@ async def unicorn_exception_handler(
         status_code=exc.args[0].status_code,
         content=exc.args[0].dict(),
     )
+
+
+@app.on_event("startup")
+async def startup_database() -> None:
+    await init_db("sqlite+aiosqlite:///database.db", True, True)
+
+
+@app.on_event("shutdown")
+async def close_all_databases() -> None:
+    from snmp_spy.infrastructure.db import session
+
+    await session().close()
