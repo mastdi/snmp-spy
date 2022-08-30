@@ -58,9 +58,6 @@ class SessionContext:
     async def __aexit__(
         self, exc_type: Type[Exception], exc: Exception, tb: Any
     ) -> None:
-        print(type(exc_type))
-        print(type(exc))
-        print(type(tb))
         assert isinstance(self.__session, AsyncSession)
         if exc_type is None:
             await self.__session.commit()
