@@ -6,8 +6,8 @@ import pydantic
 from fastapi import status
 
 _NAMESPACE = UUID(bytes=hashlib.shake_256(b"snmp_spy").digest(16))
-_NOT_FOUND = str(uuid5(_NAMESPACE, "NotFound"))
-_RESOURCE_ALREADY_EXISTS = str(uuid5(_NAMESPACE, "ResourceAlreadyExists"))
+NOT_FOUND_IDENTIFIER = str(uuid5(_NAMESPACE, "NotFound"))
+RESOURCE_ALREADY_EXISTS_IDENTIFIER = str(uuid5(_NAMESPACE, "ResourceAlreadyExists"))
 
 
 class ExceptionBase(pydantic.BaseModel):
@@ -22,14 +22,14 @@ class NotFoundError(ExceptionBase):
     def __init__(self, identifier: UUID, **data: Any) -> None:
         data["message"] = f"Resource with identifier '{identifier}' not found."
         data["status_code"] = status.HTTP_404_NOT_FOUND
-        data["error_identifier"] = _NOT_FOUND
+        data["error_identifier"] = NOT_FOUND_IDENTIFIER
         super().__init__(**data)
 
     class Config:
         schema_extra = {
             "example": {
                 "status_code": status.HTTP_404_NOT_FOUND,
-                "error_identifier": _NOT_FOUND,
+                "error_identifier": NOT_FOUND_IDENTIFIER,
                 "message": "Resource with identifier "
                 "'608195e9-f99f-4df1-96d2-f675204affab' not found.",
             }
@@ -40,14 +40,14 @@ class AlreadyExistsError(ExceptionBase):
     def __init__(self, name: str, **data: Any) -> None:
         data["message"] = f"Resource with unique property '{name}' already exists."
         data["status_code"] = status.HTTP_409_CONFLICT
-        data["error_identifier"] = _RESOURCE_ALREADY_EXISTS
+        data["error_identifier"] = RESOURCE_ALREADY_EXISTS_IDENTIFIER
         super().__init__(**data)
 
     class Config:
         schema_extra = {
             "example": {
                 "status_code": status.HTTP_409_CONFLICT,
-                "error_identifier": _RESOURCE_ALREADY_EXISTS,
+                "error_identifier": RESOURCE_ALREADY_EXISTS_IDENTIFIER,
                 "message": "Resource with unique property 'name' already exists.",
             }
         }

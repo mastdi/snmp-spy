@@ -12,6 +12,11 @@ Feature: Create, read, update, and delete records of devices
     When I look up the device with the given identifier
     Then I see the details of that device
 
+  Scenario: Read a device not existing
+    Given any identifier of a non-existing device
+    When I look up the device with the given identifier
+    Then the read will fail
+
   Scenario: List all devices
     Given multiple devices already in the storage
     When I list all devices
