@@ -74,6 +74,22 @@ def step_when_list_devices(context: Context) -> None:
     context.list_result = [Device(**entity) for entity in response.json()["devices"]]
 
 
+@when("I update the details of that device")
+def step_when_update_device(context: Context) -> None:
+    client: TestClient = context.api_client
+    identifier: uuid.UUID = context.identifier
+    device: Device = context.response
+
+    device.description = (
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod "
+        "tempor incididunt ut labore et dolore magna aliqua."
+    )
+
+    context.lookup_response = client.patch(
+        f"/devices/{identifier}", json={"description": device.description}
+    )
+
+
 @then("I see the details of that device")
 def step_device_details(context: Context) -> None:
     assert context.lookup_response.status_code == HTTPStatus.OK

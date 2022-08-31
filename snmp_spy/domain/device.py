@@ -1,8 +1,8 @@
-from typing import List, Optional
+from typing import Any, List, Optional
 
 import pydantic
 
-from snmp_spy.domain import Identifier
+from snmp_spy.domain import Identifier, make_optional
 from snmp_spy.util.mediator import Request, Response
 
 
@@ -58,4 +58,11 @@ class DeviceIdentifier(Request, Identifier):
 
 
 class ListDevices(Request):
+    pass
+
+
+DeviceInOptional: Any = make_optional(DeviceIn)
+
+
+class DeviceOptional(Request, DeviceInOptional, Identifier):
     pass
