@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 
 import pydantic
 
@@ -45,5 +45,17 @@ class Device(Response, DeviceBase, Identifier):
         orm_mode = True
 
 
+class DeviceList(Response):
+    devices: List[Device] = pydantic.Field(
+        ...,
+        title="Envelopes a list of devices.",
+        description="Contains a list of devices",
+    )
+
+
 class DeviceIdentifier(Request, Identifier):
+    pass
+
+
+class ListDevices(Request):
     pass

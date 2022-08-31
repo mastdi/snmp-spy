@@ -11,3 +11,8 @@ Feature: Create, read, update, and delete records of devices
     Given the unique identifier of an existing device
     When I look up the device with the given identifier
     Then I see the details of that device
+
+  Scenario: List all devices
+    Given multiple devices already in the storage
+    When I list all devices
+    Then I see the details of all existing devices in the storage
