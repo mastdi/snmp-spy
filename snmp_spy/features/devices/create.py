@@ -7,9 +7,9 @@ from sqlalchemy.exc import IntegrityError
 
 import snmp_spy.infrastructure.db as db
 from snmp_spy.domain.device import Device, DeviceIn
+from snmp_spy.domain.exceptions import AlreadyExistsError
 from snmp_spy.util.mediator import Handler, mediator
 
-from ...domain.exceptions import AlreadyExistsError
 from .db import Devices
 from .router import router
 

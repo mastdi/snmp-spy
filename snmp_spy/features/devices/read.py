@@ -6,9 +6,9 @@ from sqlalchemy.exc import NoResultFound
 
 import snmp_spy.infrastructure.db as db
 from snmp_spy.domain.device import Device, DeviceIdentifier
+from snmp_spy.domain.exceptions import NotFoundError
 from snmp_spy.util.mediator import Handler, mediator
 
-from ...domain.exceptions import NotFoundError
 from .db import Devices
 from .router import router
 
