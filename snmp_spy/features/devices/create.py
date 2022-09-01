@@ -13,11 +13,16 @@ from snmp_spy.util.mediator import Handler, mediator
 from .db import Devices
 from .router import router
 
-__all__ = ["DeviceCreate", "create_device"]
+__all__ = ["DeviceCreate"]
 
 
 class DeviceCreate(Handler):
     async def handle(self, request: DeviceIn) -> Device:
+        """Creates a new device in storage.
+
+        The device is able to act as an SNMP Spy and hence imitate the SNMP responses
+        a normal network-connected device would have.
+        """
         statement = insert(Devices).values(**request.dict())
 
         async with db.SessionContext() as session:
@@ -38,7 +43,9 @@ class DeviceCreate(Handler):
     "/devices",
     operation_id="create_device",
     summary="Create a new device.",
-    description="Creates a new device that can act as an SNMP spy.",
+    description="\n".join(
+        line.lstrip() for line in DeviceCreate.handle.__doc__ or "".splitlines()
+    ),
     response_model=Device,
     status_code=HTTPStatus.CREATED,
     responses={
