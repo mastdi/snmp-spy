@@ -38,9 +38,7 @@ devices.register_routes(app)
 
 
 @app.exception_handler(RuntimeError)
-async def unicorn_exception_handler(
-    request: Request, exc: RuntimeError
-) -> JSONResponse:
+def unicorn_exception_handler(request: Request, exc: RuntimeError) -> JSONResponse:
     if not isinstance(exc.args[0], ExceptionBase):
         raise exc
     return JSONResponse(
