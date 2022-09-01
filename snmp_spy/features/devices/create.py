@@ -44,7 +44,7 @@ class DeviceCreate(Handler):
     operation_id="create_device",
     summary="Create a new device.",
     description="\n".join(
-        line.lstrip() for line in DeviceCreate.handle.__doc__ or "".splitlines()
+        line.lstrip() for line in (DeviceCreate.handle.__doc__ or "").splitlines()
     ),
     response_model=Device,
     status_code=HTTPStatus.CREATED,
