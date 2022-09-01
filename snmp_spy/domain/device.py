@@ -6,7 +6,7 @@ from snmp_spy.domain import Identifier, make_optional
 from snmp_spy.util.mediator import Request, Response
 
 
-class DeviceBase(pydantic.BaseModel):
+class _DeviceBase(pydantic.BaseModel):
     name: str = pydantic.Field(
         ...,
         title="The name of the device.",
@@ -30,11 +30,13 @@ class DeviceBase(pydantic.BaseModel):
         }
 
 
-class DeviceIn(Request, DeviceBase):
-    pass
+class DeviceIn(Request, _DeviceBase):
+    """Properties needed to create a new device."""
 
 
-class Device(Response, DeviceBase, Identifier):
+class Device(Response, _DeviceBase, Identifier):
+    """Representation of a device."""
+
     class Config:
         schema_extra = {
             "example": {
@@ -46,6 +48,8 @@ class Device(Response, DeviceBase, Identifier):
 
 
 class DeviceList(Response):
+    """Envelopes a list of devices."""
+
     devices: List[Device] = pydantic.Field(
         ...,
         title="Envelopes a list of devices.",
@@ -54,19 +58,20 @@ class DeviceList(Response):
 
 
 class DeviceReadRequest(Request, Identifier):
-    pass
+    """Request used to read a device from storage via the mediator."""
 
 
 class DeviceDeleteRequest(Request, Identifier):
-    pass
+    """Request used to delete a device from storage via the mediator."""
 
 
 class ListDevices(Request):
-    pass
+    """Request used to list all devices from storage via the mediator."""
 
 
 DeviceInOptional: Any = make_optional(DeviceIn)
+DeviceInOptional.__doc__ = """Properties possible to update."""
 
 
-class DeviceOptional(Request, DeviceInOptional, Identifier):
-    pass
+class DeviceUpdateRequest(Request, DeviceInOptional, Identifier):
+    """Request used to update a device in storage via the mediator."""

@@ -8,8 +8,8 @@ import snmp_spy.infrastructure.db as db
 from snmp_spy.domain.device import (
     Device,
     DeviceInOptional,
-    DeviceOptional,
     DeviceReadRequest,
+    DeviceUpdateRequest,
 )
 from snmp_spy.domain.exceptions import AlreadyExistsError, NotFoundError
 from snmp_spy.util.mediator import Handler, mediator
@@ -19,7 +19,7 @@ from .router import router
 
 
 class DeviceUpdate(Handler):
-    async def handle(self, request: DeviceOptional) -> Device:
+    async def handle(self, request: DeviceUpdateRequest) -> Device:
         patch_values = request.dict(
             exclude_defaults=True, exclude_none=True, exclude={"identifier"}
         )
@@ -63,5 +63,5 @@ class DeviceUpdate(Handler):
 )
 async def read_device(identifier: UUID, device: DeviceInOptional) -> Device:
     return await mediator.send(
-        DeviceOptional(**{"identifier": identifier, **device.dict()})
+        DeviceUpdateRequest(**{"identifier": identifier, **device.dict()})
     )
