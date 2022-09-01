@@ -13,7 +13,16 @@ from .router import router
 
 
 class DeviceDelete(Handler):
+    """Delete device handler."""
+
     async def handle(self, request: DeviceDeleteRequest) -> EmptyResponse:
+        """Deletes a device from storage.
+
+        The result after calling this endpoint would ensure that no devices with the
+        given identifier are found. This endpoint will still succeed even if the there
+        is no device with the given identifier (since there will be no device found
+        afterwards).
+        """
         async with SessionContext() as session:
             await session.execute(
                 (delete(Devices).where(Devices.identifier == request.identifier))
@@ -25,6 +34,9 @@ class DeviceDelete(Handler):
     "/devices/{identifier}",
     operation_id="delete_device",
     summary="Delete a device.",
+    description="\n".join(
+        line.lstrip() for line in (DeviceDelete.handle.__doc__ or "").splitlines()
+    ),
     status_code=status.HTTP_204_NO_CONTENT,
     responses={
         status.HTTP_204_NO_CONTENT: {
@@ -33,10 +45,4 @@ class DeviceDelete(Handler):
     },
 )
 async def delete_device(identifier: UUID) -> None:
-    """Deletes a device from storage.
-
-    The result after calling this endpoint would ensure that no devices with the given
-    identifier are found. This endpoint will still succeed even if the there is no
-    device with the given identifier (since there will be no device found afterwards).
-    """
     await mediator.send(DeviceDeleteRequest(identifier=identifier))
