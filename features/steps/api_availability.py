@@ -1,9 +1,12 @@
+from uuid import UUID
+
 from behave import given, then
 from behave.runner import Context
 from fastapi.testclient import TestClient
 
 from snmp_spy import pyproject
 from snmp_spy.api.main import app
+from snmp_spy.domain import Identifier
 
 
 @given("the API")
@@ -28,3 +31,11 @@ def then_openapi_spec_available(context: Context) -> None:
     assert info["license"]["url"].endswith("LICENSE")
     assert info["contact"]["name"] == pyproject.tool.poetry.authors[0].display_name
     assert info["contact"]["email"] == pyproject.tool.poetry.authors[0].mail
+
+
+@then("I know the unique identifier of said {resource_type}")
+def step_identifier_of_resource(context: Context, resource_type: str) -> None:
+    response: Identifier = context.response
+
+    assert resource_type is not None
+    assert isinstance(response.identifier, UUID)
