@@ -1,3 +1,4 @@
+#noinspection CucumberUndefinedStep
 Feature: Create, read, update, and delete records of devices
 
   Background:
@@ -26,3 +27,9 @@ Feature: Create, read, update, and delete records of devices
     Given the unique identifier of an existing device
     When I update the details of that device
     Then I see the details of that device
+
+  Scenario: Delete a device
+    Given the unique identifier of an existing device
+    When I delete that device
+    And I look up the device with the given identifier
+    Then the read will fail

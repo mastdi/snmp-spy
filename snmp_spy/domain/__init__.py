@@ -4,6 +4,8 @@ from uuid import UUID
 import pydantic
 from pydantic import create_model
 
+from snmp_spy.util.mediator import Response
+
 
 class Identifier(pydantic.BaseModel):
     identifier: UUID = pydantic.Field(
@@ -14,6 +16,13 @@ class Identifier(pydantic.BaseModel):
         exclusiveMinimum=1,
         exclusiveMaximum=64,
     )
+
+
+class EmptyResponse(Response):
+    pass
+
+
+EMPTY_RESPONSE = EmptyResponse()
 
 
 def make_optional(baseclass: Type[pydantic.BaseModel]) -> Type[pydantic.BaseModel]:

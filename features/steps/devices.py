@@ -90,6 +90,16 @@ def step_when_update_device(context: Context) -> None:
     )
 
 
+@when("I delete that device")
+def step_when_delete_device(context: Context) -> None:
+    client: TestClient = context.api_client
+    identifier: uuid.UUID = context.identifier
+
+    response = client.delete(f"/devices/{identifier}")
+
+    assert response.status_code == HTTPStatus.NO_CONTENT
+
+
 @then("I see the details of that device")
 def step_device_details(context: Context) -> None:
     assert context.lookup_response.status_code == HTTPStatus.OK

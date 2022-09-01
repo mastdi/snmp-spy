@@ -53,7 +53,11 @@ class DeviceList(Response):
     )
 
 
-class DeviceIdentifier(Request, Identifier):
+class DeviceReadRequest(Request, Identifier):
+    pass
+
+
+class DeviceDeleteRequest(Request, Identifier):
     pass
 
 

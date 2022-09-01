@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
 
 import snmp_spy.infrastructure.db as db
-from snmp_spy.domain.device import Device, DeviceIdentifier
+from snmp_spy.domain.device import Device, DeviceReadRequest
 from snmp_spy.domain.exceptions import NotFoundError
 from snmp_spy.util.mediator import Handler, mediator
 
@@ -14,7 +14,7 @@ from .router import router
 
 
 class DeviceRead(Handler):
-    async def handle(self, request: DeviceIdentifier) -> Device:
+    async def handle(self, request: DeviceReadRequest) -> Device:
         statement = select(Devices).where(Devices.identifier == request.identifier)
 
         async with db.session() as session:
@@ -46,4 +46,4 @@ class DeviceRead(Handler):
     },
 )
 async def read_device(identifier: UUID) -> Device:
-    return await mediator.send(DeviceIdentifier(identifier=identifier))
+    return await mediator.send(DeviceReadRequest(identifier=identifier))

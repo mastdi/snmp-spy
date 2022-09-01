@@ -7,9 +7,9 @@ from sqlalchemy.exc import IntegrityError
 import snmp_spy.infrastructure.db as db
 from snmp_spy.domain.device import (
     Device,
-    DeviceIdentifier,
     DeviceInOptional,
     DeviceOptional,
+    DeviceReadRequest,
 )
 from snmp_spy.domain.exceptions import AlreadyExistsError, NotFoundError
 from snmp_spy.util.mediator import Handler, mediator
@@ -25,7 +25,7 @@ class DeviceUpdate(Handler):
         )
         if len(patch_values) == 0:
             # Nothing to patch
-            return await mediator.send(DeviceIdentifier(identifier=request.identifier))
+            return await mediator.send(DeviceReadRequest(identifier=request.identifier))
 
         async with db.SessionContext() as session:
             try:
@@ -40,7 +40,7 @@ class DeviceUpdate(Handler):
                 raise RuntimeError(AlreadyExistsError(name=request.name)) from error
 
         # Return the updated device
-        return await mediator.send(DeviceIdentifier(identifier=request.identifier))
+        return await mediator.send(DeviceReadRequest(identifier=request.identifier))
 
 
 @router.patch(
