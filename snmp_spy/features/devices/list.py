@@ -11,7 +11,7 @@ from .router import router
 
 class DevicesList(Handler):
     async def handle(self, request: ListDevices) -> DeviceList:
-        statement = select(Devices).where(Devices.deleted.is_(None))
+        statement = select(Devices)
 
         async with db.session() as session:
             cursor = await session.execute(statement)

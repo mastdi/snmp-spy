@@ -14,5 +14,6 @@ class Devices(Base):
     name = Column(String(length=128), unique=True)
     description = Column(String(length=65536))
     created = Column(DateTime(), default=datetime.datetime.utcnow)
-    updated = Column(DateTime(), default=datetime.datetime.utcnow)
-    deleted = Column(DateTime(), default=None)
+    updated = Column(
+        DateTime(), default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow
+    )
