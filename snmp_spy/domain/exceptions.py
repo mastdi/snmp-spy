@@ -19,6 +19,8 @@ class ExceptionBase(pydantic.BaseModel):
 
 
 class NotFoundError(ExceptionBase):
+    """Used when a specific resource is not found."""
+
     def __init__(self, identifier: UUID, **data: Any) -> None:
         data["message"] = f"Resource with identifier '{identifier}' not found."
         data["status_code"] = status.HTTP_404_NOT_FOUND
@@ -37,6 +39,8 @@ class NotFoundError(ExceptionBase):
 
 
 class AlreadyExistsError(ExceptionBase):
+    """Used when a resource with would violate a unique constraint."""
+
     def __init__(self, name: str, **data: Any) -> None:
         data["message"] = f"Resource with unique property '{name}' already exists."
         data["status_code"] = status.HTTP_409_CONFLICT
