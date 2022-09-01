@@ -15,6 +15,11 @@ from .router import router
 
 class DeviceRead(Handler):
     async def handle(self, request: DeviceReadRequest) -> Device:
+        """Reads a device from storage.
+
+        Looks up a device based on the identifier provided and returns the details of
+        that device if found. Raises a NotFoundError if the identifier were not found.
+        """
         statement = select(Devices).where(Devices.identifier == request.identifier)
 
         async with db.session() as session:
@@ -30,8 +35,10 @@ class DeviceRead(Handler):
 @router.get(
     "/devices/{identifier}",
     operation_id="read_device",
-    summary="Read a new device.",
-    description="Read a new device from storage.",
+    summary="Read a device.",
+    description="\n".join(
+        line.lstrip() for line in (DeviceRead.handle.__doc__ or "").splitlines()
+    ),
     response_model=Device,
     status_code=status.HTTP_200_OK,
     responses={
