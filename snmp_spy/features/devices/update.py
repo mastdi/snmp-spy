@@ -20,6 +20,15 @@ from .router import router
 
 class DeviceUpdate(Handler):
     async def handle(self, request: DeviceUpdateRequest) -> Device:
+        """Updates a device.
+
+        All provided and non-null values will be updated and the updated device
+        returned. If the updated name would conflict with an existing device, then a
+        AlreadyExistsError will be raised.
+
+        If no values are provided or all are set to null, then the unmodified device
+        will be fetched from storage and returned.
+        """
         patch_values = request.dict(
             exclude_defaults=True, exclude_none=True, exclude={"identifier"}
         )
@@ -47,7 +56,9 @@ class DeviceUpdate(Handler):
     "/devices/{identifier}",
     operation_id="update_device",
     summary="Update a device.",
-    description="Update a device in storage.",
+    description="\n".join(
+        line.lstrip() for line in (DeviceUpdate.handle.__doc__ or "").splitlines()
+    ),
     response_model=Device,
     status_code=status.HTTP_200_OK,
     responses={
