@@ -11,6 +11,7 @@ from .router import router
 
 class DevicesList(Handler):
     async def handle(self, request: ListDevices) -> DeviceList:
+        """Lists all device from storage."""
         statement = select(Devices)
 
         async with db.session() as session:
@@ -24,7 +25,9 @@ class DevicesList(Handler):
     "/devices",
     operation_id="list_device",
     summary="List all devices",
-    description="Lists all device from storage.",
+    description="\n".join(
+        line.lstrip() for line in (DevicesList.handle.__doc__ or "").splitlines()
+    ),
     response_model=DeviceList,
     status_code=status.HTTP_200_OK,
     responses={
