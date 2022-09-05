@@ -22,7 +22,7 @@ def before_scenario(context: Context, scenario: Scenario) -> None:
     context.db_name = temp_file.name
     temp_file.close()
 
-    loop.run_until_complete(init_db(f"sqlite+aiosqlite:///{path}", False, True))
+    loop.run_until_complete(init_db(f"sqlite+aiosqlite:///{context.db_name}", False, True))
 
 
 def after_scenario(context: Context, scenario: Scenario) -> None:
