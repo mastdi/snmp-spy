@@ -25,7 +25,7 @@ def step_license(context: Context) -> None:
     """
     license_file = context.root_dir.joinpath("LICENSE")
 
-    with open(license_file, "rb") as license_fd:
+    with open(license_file, "r+b") as license_fd:
         content = license_fd.read()
     license_hash = hashlib.sha224(content).hexdigest()
 
