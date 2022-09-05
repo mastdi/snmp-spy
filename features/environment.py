@@ -14,8 +14,14 @@ def before_scenario(context: Context, scenario: Scenario) -> None:
     except RuntimeError:
         loop = asyncio.get_event_loop()
 
-    handle, path = tempfile.mkstemp(suffix=".db", prefix="behave-tests")
-    context.db_name = path
+    temp_file = tempfile.NamedTemporaryFile(
+        suffix=".db",
+        prefix="behave-tests", 
+        delete=False,
+    )
+    context.db_name = temp_file.name
+    temp_file.close()
+
     loop.run_until_complete(init_db(f"sqlite+aiosqlite:///{path}", False, True))
 
 
