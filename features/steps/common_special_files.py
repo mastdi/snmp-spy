@@ -32,7 +32,7 @@ def step_license(context: Context) -> None:
     # Compare to "sha224sum LICENSE" of initial commit
     # TODO: Figure out why Windows gives another hash
     assert len(content) > 0
-    # assert license_hash == "45fd0b382919a02f391b9ce13e70ed703b9569cce812332d03c514a2"
+    assert license_hash == "45fd0b382919a02f391b9ce13e70ed703b9569cce812332d03c514a2", content
 
 
 @then('"{file_name}" is available')
