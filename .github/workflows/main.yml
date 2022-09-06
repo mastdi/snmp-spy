@@ -17,9 +17,6 @@ jobs:
       #----------------------------------------------
       #       check-out repo and set-up python
       #----------------------------------------------
-      - name: Set git to use LF
-        run: |
-          git config --global core.autocrlf false
       - name: Check out repository
         uses: actions/checkout@v2
       - name: Set up python ${{ matrix.python-version }}
