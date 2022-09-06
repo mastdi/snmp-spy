@@ -38,7 +38,7 @@ jobs:
         run: |
           source $VENV
           behave -q --junit --junit-directory=.coverage-reports
-          ll .coverage-reports/
+          ls -la .coverage-reports/
 
   test:
     needs: coverage
