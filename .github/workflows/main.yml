@@ -21,7 +21,9 @@ jobs:
         run: |
           git config --global core.autocrlf false
 
+
       - uses: actions/checkout@v2
+
       - name: Set up python ${{ matrix.python-version }}
         id: setup-python
         uses: actions/setup-python@v2
