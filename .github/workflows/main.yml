@@ -3,7 +3,35 @@ name: CI
 on: pull_request
 
 jobs:
+  linting:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      #----------------------------------------------
+      #       check-out repo and set-up python
+      #----------------------------------------------
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+
+      #----------------------------------------------
+      # install pre-commit
+      #----------------------------------------------
+      - name: Install pre-commit
+        run: python -m pip install pre-commit
+      - uses: actions/cache@v3
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml') }}
+      #----------------------------------------------
+      # run pre-commit
+      #----------------------------------------------
+      - name: Run pre-commit
+        run: pre-commit run --show-diff-on-failure --color=always --all-files
+
   test:
+    needs: linting
     strategy:
       fail-fast: true
       matrix:
@@ -11,7 +39,7 @@ jobs:
         python-version: [ "3.8", "3.9", "3.10" ]
     defaults:
       run:
-        shell: bash 
+        shell: bash
     runs-on: ${{ matrix.os }}
     steps:
       #----------------------------------------------
@@ -20,10 +48,7 @@ jobs:
       - name: Set git to use LF
         run: |
           git config --global core.autocrlf false
-
-
       - uses: actions/checkout@v2
-
       - name: Set up python ${{ matrix.python-version }}
         id: setup-python
         uses: actions/setup-python@v2
